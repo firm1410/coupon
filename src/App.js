@@ -5,6 +5,7 @@ function App() {
   const [price, setPrice] = useState(0)
   const [coupon, setCoupon] = useState('')
   const [final, setFinal] = useState(0)
+  const [applied, setApplied] = useState('')
   let rules = [
     {
       code: 'DIS10',
@@ -71,18 +72,23 @@ function App() {
       </div>
       <button
         onClick={() => {
-          let calcValue = rules.reduce((prev, res) => {
-            if (res.rule() < prev) {
-              return res.rule()
-            }
-            return prev
-          }, total())
-          setFinal(calcValue)
+          let calcValue = rules.reduce(
+            (prev, res) => {
+              if (res.rule() < prev.price) {
+                return { price: res.rule(), code: res.code }
+              }
+              return prev
+            },
+            { price: total(), code: '' }
+          )
+          setFinal(calcValue.price)
+          setApplied(calcValue.code ? calcValue.code : 'none')
           return
         }}>
         Apply Coupon
       </button>
       <div>Total Price - {final}</div>
+      <div>Applied Coupon - {applied}</div>
     </div>
   )
 }
